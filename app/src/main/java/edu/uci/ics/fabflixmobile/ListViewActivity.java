@@ -87,7 +87,7 @@ public class ListViewActivity extends Activity {
         // request type is POST
         final StringRequest getMovieRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/movie-list",
+                baseURL + "/api/movie-list" +"?count=20" ,
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
