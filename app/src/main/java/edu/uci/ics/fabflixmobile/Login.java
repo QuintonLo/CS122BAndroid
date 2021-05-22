@@ -28,7 +28,7 @@ public class Login extends ActionBarActivity {
      */
     private final String host = "10.0.2.2";
     private final String port = "8443";
-    private final String domain = "cs122b_spring21_project1_api_example_war_exploded";
+    private final String domain = "cs122b-spring21-project1-api-example-war";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
 
 

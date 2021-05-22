@@ -32,7 +32,7 @@ public class ListViewActivity extends Activity {
   */
     private final String host = "10.0.2.2";
     private final String port = "8443";
-    private final String domain = "cs122b_spring21_project1_api_example_war_exploded";
+    private final String domain = "cs122b-spring21-project1-api-example-war";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
 
 
@@ -88,6 +88,7 @@ public class ListViewActivity extends Activity {
         final StringRequest getMovieRequest = new StringRequest(
                 Request.Method.GET,
                 baseURL + "/api/movie-list",
+
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
@@ -106,8 +107,8 @@ public class ListViewActivity extends Activity {
             protected Map<String, String> getParams() {
                 // POST request form data
                 final Map<String, String> params = new HashMap<>();
-                params.put("count", "20");
-                params.put("pageNumber", "0");
+                params.put("20", "count");
+                params.put("0", "pageNumber");
                 return params;
             }
         };
