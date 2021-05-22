@@ -8,8 +8,10 @@ public class Movie {
     private final String director;
     private final ArrayList<String> stars;
     private final ArrayList<String> genres;
+    private final String id;
 
-    public Movie(String name, int year, String director) {
+    public Movie(String id, String name, int year, String director) {
+        this.id = id;
         this.name = name;
         this.year = year;
         this.director = director;
@@ -25,6 +27,8 @@ public class Movie {
         return year;
     }
 
+    public String getId(){return id;}
+
     public String getDirector() {return director;}
 
     public ArrayList<String> getStars() {return stars;}
@@ -33,7 +37,7 @@ public class Movie {
 
     public ArrayList<String> getThreeStars() {
         ArrayList<String> temp = new ArrayList<String>();
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < stars.size(); i++){
             temp.add(stars.get(i));
         }
         return temp;
@@ -41,7 +45,7 @@ public class Movie {
 
     public ArrayList<String> getThreeGenres() {
         ArrayList<String> temp = new ArrayList<String>();
-        for(int i = 0; i < 3; i++){
+        for(int i = 0; i < genres.size(); i++){
             temp.add(genres.get(i));
         }
         return temp;

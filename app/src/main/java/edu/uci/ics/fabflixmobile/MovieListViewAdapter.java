@@ -31,7 +31,20 @@ public class MovieListViewAdapter extends ArrayAdapter<Movie> {
 
         titleView.setText(movie.getName());
         // need to cast the year to a string to set the label
-        subtitleView.setText(movie.getYear() + "");
+        String subtitleString = "Year: " + movie.getYear() + "\n";
+        subtitleString += "Director: " + movie.getDirector() + "\n";
+        subtitleString += "Genres:\n";
+        ArrayList<String> genres = movie.getGenres();
+        for(int i = 0; i < genres.size(); i++){
+            subtitleString += "   " + genres.get(i) + "\n";
+        }
+        subtitleString += "Stars:\n";
+        ArrayList<String> stars = movie.getStars();
+        for(int i = 0; i < stars.size(); i++){
+            subtitleString += "   " + stars.get(i) + "\n";
+        }
+        System.out.println(subtitleString);
+        subtitleView.setText(subtitleString);
 
         return view;
     }

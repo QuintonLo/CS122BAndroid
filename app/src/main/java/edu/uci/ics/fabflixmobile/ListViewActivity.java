@@ -9,6 +9,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.lang.Object;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import com.android.volley.Request;
@@ -81,18 +86,55 @@ public class ListViewActivity extends Activity {
 
     public void getMovieList() {
 
-
+        final ArrayList<Movie> movies = new ArrayList<>();
         // use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         // request type is POST
         final StringRequest getMovieRequest = new StringRequest(
                 Request.Method.GET,
-                baseURL + "/api/movie-list",
+
+                baseURL + "/api/movie-list" +"?count=20" ,
 
                 response -> {
                     // TODO: should parse the json response to redirect to appropriate functions
                     //  upon different response value.
                     Log.d("login.success", response);
+                    JSONObject newResponse = null;
+                    try {
+                        newResponse = new JSONObject(response);
+                        JSONArray newResponse2 = new JSONArray(newResponse.get("movieInfo").toString());
+                        for(int i = 0; i < newResponse2.length(); i++){
+                            JSONObject film = new JSONObject(newResponse2.get(i).toString());
+                            Movie movie = new Movie(film.get("movieID").toString(), film.get("movieTitle").toString(), Integer.parseInt(film.get("movieYear").toString()), film.get("movieDirector").toString());
+                            JSONArray genres = new JSONArray(film.get("genres").toString());
+                            for(int j = 0; j < genres.length(); j++){
+                                movie.addGenre(genres.get(j).toString());
+                            }
+
+                            JSONArray stars = new JSONArray(film.get("stars").toString());
+                            for(int j = 0; j < stars.length(); j++){
+                                JSONObject starInfo = new JSONObject(stars.get(j).toString());
+                                movie.addStar(starInfo.get("name").toString());
+                            }
+
+                            movies.add(movie);
+                        }
+                        MovieListViewAdapter adapter = new MovieListViewAdapter(movies, this);
+
+                        ListView listView = findViewById(R.id.list);
+                        listView.setAdapter(adapter);
+
+                        listView.setOnItemClickListener((parent, view, position, id) -> {
+                            Movie movie = movies.get(position);
+                            String message = String.format("Clicked on position: %d, name: %s, %d", position, movie.getName(), movie.getYear());
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+                        });
+
+
+                        System.out.println(newResponse.get("movieInfo"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println(response);
                     // initialize the activity(page)/destination
                     //  Intent listPage = new Intent(Login.this, ListViewActivity.class);
