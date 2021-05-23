@@ -35,21 +35,21 @@ public class Movie {
 
     public ArrayList<String> getGenres() {return genres;}
 
-    public ArrayList<String> getThreeStars() {
-        ArrayList<String> temp = new ArrayList<String>();
-        for(int i = 0; i < stars.size(); i++){
-            temp.add(stars.get(i));
-        }
-        return temp;
-    }
-
-    public ArrayList<String> getThreeGenres() {
-        ArrayList<String> temp = new ArrayList<String>();
-        for(int i = 0; i < genres.size(); i++){
-            temp.add(genres.get(i));
-        }
-        return temp;
-    }
+//    public ArrayList<String> getThreeStars() {
+//        ArrayList<String> temp = new ArrayList<String>();
+//        for(int i = 0; i < stars.size(); i++){
+//            temp.add(stars.get(i));
+//        }
+//        return temp;
+//    }
+//
+//    public ArrayList<String> getThreeGenres() {
+//        ArrayList<String> temp = new ArrayList<String>();
+//        for(int i = 0; i < genres.size(); i++){
+//            temp.add(genres.get(i));
+//        }
+//        return temp;
+//    }
 
     public void addGenre(String genre) {this.genres.add(genre);}
 
