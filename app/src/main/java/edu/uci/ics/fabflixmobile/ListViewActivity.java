@@ -37,12 +37,15 @@ public class ListViewActivity extends Activity {
   */
     private final String host = "10.0.2.2";
     private final String port = "8443";
-    private final String domain = "cs122b-spring21-project1-api-example-war";
+    private final String domain = "cs122b-spring21-project1-api-example-war-exploded";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
     private Button next;
     private Button prev;
+    private Button searchButton;
     private int page = 0;
     private String hasNext = "1";
+    private EditText searchInput;
+
 
 
 
@@ -94,6 +97,11 @@ public class ListViewActivity extends Activity {
 
         prev  = findViewById(R.id.previous);
         prev.setOnClickListener(view -> checkPrevious());
+
+        searchInput = findViewById(R.id.searchInput);
+        searchButton = findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(view -> ChangePageNonAutoFill());
     }
 
     public void getMovieList() {
@@ -148,7 +156,7 @@ public class ListViewActivity extends Activity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(response);
+                    //System.out.println(response);
                     // initialize the activity(page)/destination
                     //  Intent listPage = new Intent(Login.this, ListViewActivity.class);
                     // activate the list page.
@@ -174,29 +182,32 @@ public class ListViewActivity extends Activity {
 
 
     public void checkNext() {
-//        //if(search = ""){
-    //        if(hasNext.equals("1")){
+
+        System.out.println("++++++++++++++++\n\n\n" +searchInput.getText().toString() + "\n\n\n\n\"++++++++++++++++\\n\\n\\n\" ");
+        if(searchInput.getText().toString().equals("") ){
+            System.out.println("I have it");
+            if(hasNext.equals("1")){
                 page ++;
                 ChangePage();
-    //        }
-//        //}
-//        //else{
+            }
+        }
+        else{
 
-//
-//        //}
+
+        }
     }
 
     public void checkPrevious() {
-//        //if(search = ""){
+        if(searchInput.getText().toString().equals("")){
             if(page > 0){
                 page--;
                 ChangePage();
             }
-//        //}
-//        //else{
+        }
+        else{
 
-//
-//        //}
+
+        }
     }
 
     public void ChangePage() {
@@ -237,7 +248,7 @@ public class ListViewActivity extends Activity {
 
                         ListView listView = findViewById(R.id.list);
                         listView.setAdapter(adapter);
-                        System.out.println(newResponse.get("movieInfo"));
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -252,7 +263,64 @@ public class ListViewActivity extends Activity {
 
     }
 
+    public void ChangePageNonAutoFill() {
+        page = 0;
+        final ArrayList<Movie> movies = new ArrayList<>();
+        // use the same network queue across our application
+        final RequestQueue queue = NetworkManager.sharedManager(this).queue;
+        // request type is POST
+        final StringRequest loginRequest = new StringRequest(
+                Request.Method.GET,
+                baseURL + "/api/nonautofill?title="+ searchInput.getText().toString() +"&pNumber="+ page +"&" +
+                        "count=20&sortByRating=1&descending=1&secondary=0",
+                response -> {
+                    // TODO: should parse the json response to redirect to appropriate functions
+                    //  upon different response value.
+                    Log.d("next.success", response);
+                    JSONObject newResponse = null;
+                    try {
+                        newResponse = new JSONObject(response);
+                        JSONArray newResponse2 = new JSONArray(newResponse.get("movieInfo").toString());
+                        for (int i = 0; i < newResponse2.length(); i++) {
+                            JSONObject film = new JSONObject(newResponse2.get(i).toString());
+                            Movie movie = new Movie(film.get("movieLink").toString(), film.get("movieTitle").toString(), Integer.parseInt(film.get("movieYear").toString()), film.get("movieDirector").toString());
+                            JSONArray genres = new JSONArray(film.get("genres").toString());
+                            for (int j = 0; j < genres.length(); j++) {
+                                movie.addGenre(genres.get(j).toString());
+                            }
 
+                            JSONArray stars = new JSONArray(film.get("stars").toString());
+                            for (int j = 0; j < stars.length(); j++) {
+                                JSONObject starInfo = new JSONObject(stars.get(j).toString());
+                                movie.addStar(starInfo.get("name").toString());
+                            }
+
+                            movies.add(movie);
+                        }
+
+                        MovieListViewAdapter adapter = new MovieListViewAdapter(movies, this);
+
+                        ListView listView = findViewById(R.id.list);
+                        listView.setAdapter(adapter);
+
+                        listView.setOnItemClickListener((parent, view, position, id) -> {
+                                    Movie movie = movies.get(position);
+                                    singleMovie(movie.getId());
+                        });
+                      //  System.out.println(newResponse.get("movieInfo"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {
+                    // error
+                    Log.d("login.error", error.toString());
+                });
+
+        // important: queue.add is where the login request is actually sent
+        queue.add(loginRequest);
+
+    }
 
 
 
