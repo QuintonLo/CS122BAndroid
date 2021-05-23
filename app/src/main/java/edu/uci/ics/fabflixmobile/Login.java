@@ -28,7 +28,7 @@ public class Login extends ActionBarActivity {
      */
     private final String host = "10.0.2.2";
     private final String port = "8443";
-    private final String domain = "cs122b-spring21-project1-api-example-war";
+    private final String domain = "cs122b-spring21-project1-api-example-war-exploded";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
 
 
@@ -73,8 +73,8 @@ public class Login extends ActionBarActivity {
             protected Map<String, String> getParams() {
                 // POST request form data
                 final Map<String, String> params = new HashMap<>();
-                params.put("username", username.getText().toString());
-                params.put("password", password.getText().toString());
+                params.put("username", "a@email.com");// username.getText().toString());
+                params.put("password", "a2"); //password.getText().toString());
 
                 return params;
             }

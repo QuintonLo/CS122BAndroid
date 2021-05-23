@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">FabflixMobile</string>
+    <string name="Previous">previous</string>
+    <string name="myPrevious">thePrevious</string>
+    <string name="Next">Next</string>
     <color name="red">#CC0000</color>
 </resources>

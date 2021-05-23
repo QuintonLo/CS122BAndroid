@@ -37,8 +37,12 @@ public class ListViewActivity extends Activity {
   */
     private final String host = "10.0.2.2";
     private final String port = "8443";
-    private final String domain = "cs122b-spring21-project1-api-example-war";
+    private final String domain = "cs122b-spring21-project1-api-example-war-exploded";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
+    private Button next;
+    private Button prev;
+    private int page = 0;
+    private String hasNext = "1";
 
 
 
@@ -73,6 +77,8 @@ public class ListViewActivity extends Activity {
 
         mylist = findViewById(R.id.list);
 
+  //      next.setOnClickListener( view -> checkNext());
+
             // upon creation, inflate and initialize the layout
           //  setContentView(R.layout.login);
 
@@ -82,6 +88,12 @@ public class ListViewActivity extends Activity {
 
 
         getMovieList();
+
+        next = findViewById(R.id.next);
+        next.setOnClickListener(view -> checkNext());
+
+        prev  = findViewById(R.id.previous);
+        prev.setOnClickListener(view -> checkPrevious());
     }
 
     public void getMovieList() {
@@ -105,7 +117,7 @@ public class ListViewActivity extends Activity {
                         JSONArray newResponse2 = new JSONArray(newResponse.get("movieInfo").toString());
                         for(int i = 0; i < newResponse2.length(); i++){
                             JSONObject film = new JSONObject(newResponse2.get(i).toString());
-                            Movie movie = new Movie(film.get("movieID").toString(), film.get("movieTitle").toString(), Integer.parseInt(film.get("movieYear").toString()), film.get("movieDirector").toString());
+                            Movie movie = new Movie(film.get("movieLink").toString(), film.get("movieTitle").toString(), Integer.parseInt(film.get("movieYear").toString()), film.get("movieDirector").toString());
                             JSONArray genres = new JSONArray(film.get("genres").toString());
                             for(int j = 0; j < genres.length(); j++){
                                 movie.addGenre(genres.get(j).toString());
@@ -158,4 +170,89 @@ public class ListViewActivity extends Activity {
         // important: queue.add is where the login request is actually sent
         queue.add(getMovieRequest);
     }
+
+    public void checkNext() {
+//        //if(search = ""){
+    //        if(hasNext.equals("1")){
+                page ++;
+                ChangePage();
+    //        }
+//        //}
+//        //else{
+
+//
+//        //}
+    }
+
+    public void checkPrevious() {
+//        //if(search = ""){
+            if(page > 0){
+                page--;
+                ChangePage();
+            }
+//        //}
+//        //else{
+
+//
+//        //}
+    }
+
+    public void ChangePage() {
+        final ArrayList<Movie> movies = new ArrayList<>();
+        // use the same network queue across our application
+        final RequestQueue queue = NetworkManager.sharedManager(this).queue;
+        // request type is POST
+        final StringRequest loginRequest = new StringRequest(
+                Request.Method.GET,
+                baseURL + "/api/search?genre=''&title=''&startChar=''&year=''&director=''&pNumber="+page +"&" +
+                        "star=''&count=20&homePageType=0&sortByRating='1'&hasNext="+ hasNext +"&descending='1'&secondary=0",
+                response -> {
+                    // TODO: should parse the json response to redirect to appropriate functions
+                    //  upon different response value.
+                    Log.d("next.success", response);
+                    JSONObject newResponse = null;
+                    try {
+                        newResponse = new JSONObject(response);
+                        JSONArray newResponse2 = new JSONArray(newResponse.get("movieInfo").toString());
+                        for(int i = 0; i < newResponse2.length(); i++){
+                            JSONObject film = new JSONObject(newResponse2.get(i).toString());
+                            Movie movie = new Movie(film.get("movieLink").toString(), film.get("movieTitle").toString(), Integer.parseInt(film.get("movieYear").toString()), film.get("movieDirector").toString());
+                            JSONArray genres = new JSONArray(film.get("genres").toString());
+                            for(int j = 0; j < genres.length(); j++){
+                                movie.addGenre(genres.get(j).toString());
+                            }
+
+                            JSONArray stars = new JSONArray(film.get("stars").toString());
+                            for(int j = 0; j < stars.length(); j++){
+                                JSONObject starInfo = new JSONObject(stars.get(j).toString());
+                                movie.addStar(starInfo.get("name").toString());
+                            }
+
+                            movies.add(movie);
+                        }
+                        hasNext = newResponse.getString("hasNext");
+                        MovieListViewAdapter adapter = new MovieListViewAdapter(movies, this);
+
+                        ListView listView = findViewById(R.id.list);
+                        listView.setAdapter(adapter);
+
+
+                        System.out.println(newResponse.get("movieInfo"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                },
+                error -> {
+                    // error
+                    Log.d("login.error", error.toString());
+                }) {
+        };
+
+         // important: queue.add is where the login request is actually sent
+        queue.add(loginRequest);
+
+    }
+
+
 }
