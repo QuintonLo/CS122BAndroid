@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -48,7 +49,7 @@ public class Login extends ActionBarActivity {
 
     public void login() {
 
-        message.setText("Trying to login");
+        //message.setText("Trying to login");
         // use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
         // request type is POST
@@ -67,14 +68,15 @@ public class Login extends ActionBarActivity {
                 },
                 error -> {
                     // error
+                    Toast.makeText(getApplicationContext(), "Error: Invalid Credentials", Toast.LENGTH_SHORT).show();
                     Log.d("login.error", error.toString());
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 // POST request form data
                 final Map<String, String> params = new HashMap<>();
-                params.put("username", "a@email.com");// username.getText().toString());
-                params.put("password", "a2"); //password.getText().toString());
+                params.put("username", username.getText().toString());
+                params.put("password", password.getText().toString());
 
                 return params;
             }
