@@ -184,11 +184,11 @@ public class ListViewActivity extends Activity {
     public void checkNext() {
 
         System.out.println("++++++++++++++++\n\n\n" +searchInput.getText().toString() + "\n\n\n\n\"++++++++++++++++\\n\\n\\n\" ");
-        if(searchInput.getText().toString().equals("") ){
-            System.out.println("I have it");
+        if(!searchInput.getText().toString().equals("") ){
+
             if(hasNext.equals("1")){
                 page ++;
-                ChangePage();
+                ChangePageNonAutoFill();
             }
         }
         else{
@@ -198,10 +198,10 @@ public class ListViewActivity extends Activity {
     }
 
     public void checkPrevious() {
-        if(searchInput.getText().toString().equals("")){
+        if(!searchInput.getText().toString().equals("")){
             if(page > 0){
                 page--;
-                ChangePage();
+                ChangePageNonAutoFill();
             }
         }
         else{
@@ -243,6 +243,7 @@ public class ListViewActivity extends Activity {
 
                             movies.add(movie);
                         }
+                        System.out.println("has next ------------: " + newResponse.getString("hasNext"));
                         hasNext = newResponse.getString("hasNext");
                         MovieListViewAdapter adapter = new MovieListViewAdapter(movies, this);
 
