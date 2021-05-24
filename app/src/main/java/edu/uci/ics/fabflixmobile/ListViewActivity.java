@@ -35,9 +35,9 @@ public class ListViewActivity extends Activity {
    In Android, localhost is the address of the device or the emulator.
    To connect to your machine, you need to use the below IP address
   */
-    private final String host = "10.0.2.2";
+    private final String host = "3.16.56.91";
     private final String port = "8443";
-    private final String domain = "cs122b-spring21-project1-api-example-war-exploded";
+    private final String domain = "cs122b-spring21-project1-api-example";
     private final String baseURL = "https://" + host + ":" + port + "/" + domain;
     private Button next;
     private Button prev;
@@ -265,7 +265,7 @@ public class ListViewActivity extends Activity {
     }
 
     public void ChangePageNonAutoFill() {
-        page = 0;
+
         final ArrayList<Movie> movies = new ArrayList<>();
         // use the same network queue across our application
         final RequestQueue queue = NetworkManager.sharedManager(this).queue;
